@@ -1,5 +1,5 @@
 import express from "express";
-
+import taskRoutes from "./routes/task.routes.js";
 const app = express();
 
 app.use(express.json());
@@ -11,5 +11,5 @@ app.get("/health", (_req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
+app.use("/api/v1/tasks", taskRoutes);
 export default app;
