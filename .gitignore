@@ -1,0 +1,27 @@
+# Dependencies
+backend/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+backend/dist
+backend/.next/
+backend/out/
+backend/tests
+# Tests
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
