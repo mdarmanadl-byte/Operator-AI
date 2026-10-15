@@ -1,75 +1,47 @@
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  "http://localhost:3000/api/v1";
+import type { CreateTaskInput, Task, TaskEvent } from "@/types/task";
 
-export interface Task {
-  id: string;
-  instruction: string;
-  status:
-    | "pending"
-    | "running"
-    | "waiting_for_input"
-    | "completed"
-    | "failed"
-    | "cancelled";
-  createdAt: string;
-  updatedAt: string;
-}
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api/v1").replace(/\/$/, "");
 
-async function request<T>(
-  path: string,
-  options?: RequestInit,
-): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
+    headers: { "Content-Type": "application/json", ...options?.headers },
     cache: "no-store",
   });
 
-  const data = await response.json();
-
   if (!response.ok) {
-    throw new Error(
-      data.error ?? `Request failed: ${response.status}`,
-    );
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error ?? body?.message ?? `Request failed (${response.status})`);
   }
-
-  return data as T;
+  if (response.status === 204) return undefined as T;
+  return response.json() as Promise<T>;
 }
 
-export async function listTasks(): Promise<Task[]> {
-  const result = await request<{ tasks: Task[] }>("/tasks");
-  return result.tasks;
+export async function getTasks(): Promise<Task[]> {
+  const result = await request<{ tasks: Task[] } | Task[]>("/tasks");
+  return Array.isArray(result) ? result : result.tasks;
 }
 
-export async function createTask(
-  instruction: string,
-): Promise<Task> {
+export async function getTask(id: string): Promise<Task> {
+  const result = await request<{ task: Task }>(`/tasks/${encodeURIComponent(id)}`);
+  return result.task;
+}
+
+export async function createTask(input: CreateTaskInput): Promise<Task> {
   const result = await request<{ task: Task }>("/tasks", {
     method: "POST",
-    body: JSON.stringify({ instruction }),
+    body: JSON.stringify(input),
   });
-
   return result.task;
 }
 
-export async function executeTask(
-  taskId: string,
-): Promise<void> {
-  await request(`/tasks/${taskId}/execute`, {
-    method: "POST",
-  });
+export async function executeTask(taskId: string): Promise<void> {
+  await request(`/tasks/${encodeURIComponent(taskId)}/execute`, { method: "POST" });
 }
 
-export async function getTask(
-  taskId: string,
-): Promise<Task> {
-  const result = await request<{ task: Task }>(
-    `/tasks/${taskId}`,
+export async function getTaskEvents(taskId: string): Promise<TaskEvent[]> {
+  const result = await request<{ events: TaskEvent[] } | TaskEvent[]>(
+    `/tasks/${encodeURIComponent(taskId)}/events`,
   );
-
-  return result.task;
+  return Array.isArray(result) ? result : result.events;
 }
