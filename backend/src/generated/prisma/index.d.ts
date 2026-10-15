@@ -18,6 +18,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
+/**
+ * Model TaskEvent
+ * 
+ */
+export type TaskEvent = $Result.DefaultSelection<Prisma.$TaskEventPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -149,6 +154,16 @@ export class PrismaClient<
     * ```
     */
   get task(): Prisma.TaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.taskEvent`: Exposes CRUD operations for the **TaskEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TaskEvents
+    * const taskEvents = await prisma.taskEvent.findMany()
+    * ```
+    */
+  get taskEvent(): Prisma.TaskEventDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -596,7 +611,8 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    Task: 'Task'
+    Task: 'Task',
+    TaskEvent: 'TaskEvent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -612,7 +628,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "task"
+      modelProps: "task" | "taskEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -687,6 +703,80 @@ export namespace Prisma {
           count: {
             args: Prisma.TaskCountArgs<ExtArgs>
             result: $Utils.Optional<TaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      TaskEvent: {
+        payload: Prisma.$TaskEventPayload<ExtArgs>
+        fields: Prisma.TaskEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaskEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaskEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          findFirst: {
+            args: Prisma.TaskEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaskEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          findMany: {
+            args: Prisma.TaskEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>[]
+          }
+          create: {
+            args: Prisma.TaskEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          createMany: {
+            args: Prisma.TaskEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TaskEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>[]
+          }
+          delete: {
+            args: Prisma.TaskEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          update: {
+            args: Prisma.TaskEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaskEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaskEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TaskEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.TaskEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskEventPayload>
+          }
+          aggregate: {
+            args: Prisma.TaskEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTaskEvent>
+          }
+          groupBy: {
+            args: Prisma.TaskEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaskEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaskEventCountArgs<ExtArgs>
+            result: $Utils.Optional<TaskEventCountAggregateOutputType> | number
           }
         }
       }
@@ -814,6 +904,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     task?: TaskOmit
+    taskEvent?: TaskEventOmit
   }
 
   /* Types for Logging */
@@ -888,6 +979,36 @@ export namespace Prisma {
    * Count Types
    */
 
+
+  /**
+   * Count Type TaskCountOutputType
+   */
+
+  export type TaskCountOutputType = {
+    taskEvents: number
+  }
+
+  export type TaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    taskEvents?: boolean | TaskCountOutputTypeCountTaskEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TaskCountOutputType without action
+   */
+  export type TaskCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskCountOutputType
+     */
+    select?: TaskCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TaskCountOutputType without action
+   */
+  export type TaskCountOutputTypeCountTaskEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskEventWhereInput
+  }
 
 
   /**
@@ -1058,6 +1179,8 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taskEvents?: boolean | Task$taskEventsArgs<ExtArgs>
+    _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1085,10 +1208,18 @@ export namespace Prisma {
   }
 
   export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instruction" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    taskEvents?: boolean | Task$taskEventsArgs<ExtArgs>
+    _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
-    objects: {}
+    objects: {
+      taskEvents: Prisma.$TaskEventPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       instruction: string
@@ -1489,6 +1620,7 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    taskEvents<T extends Task$taskEventsArgs<ExtArgs> = {}>(args?: Subset<T, Task$taskEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1540,6 +1672,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * Filter, which Task to fetch.
      */
     where: TaskWhereUniqueInput
@@ -1558,6 +1694,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * Filter, which Task to fetch.
      */
     where: TaskWhereUniqueInput
@@ -1575,6 +1715,10 @@ export namespace Prisma {
      * Omit specific fields from the Task
      */
     omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
     /**
      * Filter, which Task to fetch.
      */
@@ -1624,6 +1768,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * Filter, which Task to fetch.
      */
     where?: TaskWhereInput
@@ -1671,6 +1819,10 @@ export namespace Prisma {
      * Omit specific fields from the Task
      */
     omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
     /**
      * Filter, which Tasks to fetch.
      */
@@ -1720,6 +1872,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * The data needed to create a Task.
      */
     data: XOR<TaskCreateInput, TaskUncheckedCreateInput>
@@ -1767,6 +1923,10 @@ export namespace Prisma {
      * Omit specific fields from the Task
      */
     omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
     /**
      * The data needed to update a Task.
      */
@@ -1834,6 +1994,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * The filter to search for the Task to update in case it exists.
      */
     where: TaskWhereUniqueInput
@@ -1860,6 +2024,10 @@ export namespace Prisma {
      */
     omit?: TaskOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
      * Filter which Task to delete.
      */
     where: TaskWhereUniqueInput
@@ -1880,6 +2048,30 @@ export namespace Prisma {
   }
 
   /**
+   * Task.taskEvents
+   */
+  export type Task$taskEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    where?: TaskEventWhereInput
+    orderBy?: TaskEventOrderByWithRelationInput | TaskEventOrderByWithRelationInput[]
+    cursor?: TaskEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskEventScalarFieldEnum | TaskEventScalarFieldEnum[]
+  }
+
+  /**
    * Task without action
    */
   export type TaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1891,6 +2083,1073 @@ export namespace Prisma {
      * Omit specific fields from the Task
      */
     omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TaskEvent
+   */
+
+  export type AggregateTaskEvent = {
+    _count: TaskEventCountAggregateOutputType | null
+    _min: TaskEventMinAggregateOutputType | null
+    _max: TaskEventMaxAggregateOutputType | null
+  }
+
+  export type TaskEventMinAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    type: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type TaskEventMaxAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    type: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type TaskEventCountAggregateOutputType = {
+    id: number
+    taskId: number
+    type: number
+    message: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TaskEventMinAggregateInputType = {
+    id?: true
+    taskId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type TaskEventMaxAggregateInputType = {
+    id?: true
+    taskId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type TaskEventCountAggregateInputType = {
+    id?: true
+    taskId?: true
+    type?: true
+    message?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TaskEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskEvent to aggregate.
+     */
+    where?: TaskEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskEvents to fetch.
+     */
+    orderBy?: TaskEventOrderByWithRelationInput | TaskEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaskEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TaskEvents
+    **/
+    _count?: true | TaskEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaskEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaskEventMaxAggregateInputType
+  }
+
+  export type GetTaskEventAggregateType<T extends TaskEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateTaskEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTaskEvent[P]>
+      : GetScalarType<T[P], AggregateTaskEvent[P]>
+  }
+
+
+
+
+  export type TaskEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskEventWhereInput
+    orderBy?: TaskEventOrderByWithAggregationInput | TaskEventOrderByWithAggregationInput[]
+    by: TaskEventScalarFieldEnum[] | TaskEventScalarFieldEnum
+    having?: TaskEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaskEventCountAggregateInputType | true
+    _min?: TaskEventMinAggregateInputType
+    _max?: TaskEventMaxAggregateInputType
+  }
+
+  export type TaskEventGroupByOutputType = {
+    id: string
+    taskId: string
+    type: string
+    message: string
+    createdAt: Date
+    _count: TaskEventCountAggregateOutputType | null
+    _min: TaskEventMinAggregateOutputType | null
+    _max: TaskEventMaxAggregateOutputType | null
+  }
+
+  type GetTaskEventGroupByPayload<T extends TaskEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaskEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaskEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaskEventGroupByOutputType[P]>
+            : GetScalarType<T[P], TaskEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaskEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskEvent"]>
+
+  export type TaskEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskEvent"]>
+
+  export type TaskEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["taskEvent"]>
+
+  export type TaskEventSelectScalar = {
+    id?: boolean
+    taskId?: boolean
+    type?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }
+
+  export type TaskEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "type" | "message" | "createdAt", ExtArgs["result"]["taskEvent"]>
+  export type TaskEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }
+  export type TaskEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }
+  export type TaskEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | TaskDefaultArgs<ExtArgs>
+  }
+
+  export type $TaskEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TaskEvent"
+    objects: {
+      task: Prisma.$TaskPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      taskId: string
+      type: string
+      message: string
+      createdAt: Date
+    }, ExtArgs["result"]["taskEvent"]>
+    composites: {}
+  }
+
+  type TaskEventGetPayload<S extends boolean | null | undefined | TaskEventDefaultArgs> = $Result.GetResult<Prisma.$TaskEventPayload, S>
+
+  type TaskEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaskEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaskEventCountAggregateInputType | true
+    }
+
+  export interface TaskEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TaskEvent'], meta: { name: 'TaskEvent' } }
+    /**
+     * Find zero or one TaskEvent that matches the filter.
+     * @param {TaskEventFindUniqueArgs} args - Arguments to find a TaskEvent
+     * @example
+     * // Get one TaskEvent
+     * const taskEvent = await prisma.taskEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaskEventFindUniqueArgs>(args: SelectSubset<T, TaskEventFindUniqueArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TaskEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaskEventFindUniqueOrThrowArgs} args - Arguments to find a TaskEvent
+     * @example
+     * // Get one TaskEvent
+     * const taskEvent = await prisma.taskEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaskEventFindUniqueOrThrowArgs>(args: SelectSubset<T, TaskEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventFindFirstArgs} args - Arguments to find a TaskEvent
+     * @example
+     * // Get one TaskEvent
+     * const taskEvent = await prisma.taskEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaskEventFindFirstArgs>(args?: SelectSubset<T, TaskEventFindFirstArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TaskEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventFindFirstOrThrowArgs} args - Arguments to find a TaskEvent
+     * @example
+     * // Get one TaskEvent
+     * const taskEvent = await prisma.taskEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaskEventFindFirstOrThrowArgs>(args?: SelectSubset<T, TaskEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TaskEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TaskEvents
+     * const taskEvents = await prisma.taskEvent.findMany()
+     * 
+     * // Get first 10 TaskEvents
+     * const taskEvents = await prisma.taskEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const taskEventWithIdOnly = await prisma.taskEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TaskEventFindManyArgs>(args?: SelectSubset<T, TaskEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TaskEvent.
+     * @param {TaskEventCreateArgs} args - Arguments to create a TaskEvent.
+     * @example
+     * // Create one TaskEvent
+     * const TaskEvent = await prisma.taskEvent.create({
+     *   data: {
+     *     // ... data to create a TaskEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaskEventCreateArgs>(args: SelectSubset<T, TaskEventCreateArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TaskEvents.
+     * @param {TaskEventCreateManyArgs} args - Arguments to create many TaskEvents.
+     * @example
+     * // Create many TaskEvents
+     * const taskEvent = await prisma.taskEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaskEventCreateManyArgs>(args?: SelectSubset<T, TaskEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TaskEvents and returns the data saved in the database.
+     * @param {TaskEventCreateManyAndReturnArgs} args - Arguments to create many TaskEvents.
+     * @example
+     * // Create many TaskEvents
+     * const taskEvent = await prisma.taskEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TaskEvents and only return the `id`
+     * const taskEventWithIdOnly = await prisma.taskEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TaskEventCreateManyAndReturnArgs>(args?: SelectSubset<T, TaskEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TaskEvent.
+     * @param {TaskEventDeleteArgs} args - Arguments to delete one TaskEvent.
+     * @example
+     * // Delete one TaskEvent
+     * const TaskEvent = await prisma.taskEvent.delete({
+     *   where: {
+     *     // ... filter to delete one TaskEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaskEventDeleteArgs>(args: SelectSubset<T, TaskEventDeleteArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TaskEvent.
+     * @param {TaskEventUpdateArgs} args - Arguments to update one TaskEvent.
+     * @example
+     * // Update one TaskEvent
+     * const taskEvent = await prisma.taskEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaskEventUpdateArgs>(args: SelectSubset<T, TaskEventUpdateArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TaskEvents.
+     * @param {TaskEventDeleteManyArgs} args - Arguments to filter TaskEvents to delete.
+     * @example
+     * // Delete a few TaskEvents
+     * const { count } = await prisma.taskEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaskEventDeleteManyArgs>(args?: SelectSubset<T, TaskEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TaskEvents
+     * const taskEvent = await prisma.taskEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaskEventUpdateManyArgs>(args: SelectSubset<T, TaskEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TaskEvents and returns the data updated in the database.
+     * @param {TaskEventUpdateManyAndReturnArgs} args - Arguments to update many TaskEvents.
+     * @example
+     * // Update many TaskEvents
+     * const taskEvent = await prisma.taskEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TaskEvents and only return the `id`
+     * const taskEventWithIdOnly = await prisma.taskEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TaskEventUpdateManyAndReturnArgs>(args: SelectSubset<T, TaskEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TaskEvent.
+     * @param {TaskEventUpsertArgs} args - Arguments to update or create a TaskEvent.
+     * @example
+     * // Update or create a TaskEvent
+     * const taskEvent = await prisma.taskEvent.upsert({
+     *   create: {
+     *     // ... data to create a TaskEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TaskEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaskEventUpsertArgs>(args: SelectSubset<T, TaskEventUpsertArgs<ExtArgs>>): Prisma__TaskEventClient<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TaskEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventCountArgs} args - Arguments to filter TaskEvents to count.
+     * @example
+     * // Count the number of TaskEvents
+     * const count = await prisma.taskEvent.count({
+     *   where: {
+     *     // ... the filter for the TaskEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaskEventCountArgs>(
+      args?: Subset<T, TaskEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaskEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TaskEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaskEventAggregateArgs>(args: Subset<T, TaskEventAggregateArgs>): Prisma.PrismaPromise<GetTaskEventAggregateType<T>>
+
+    /**
+     * Group by TaskEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaskEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaskEventGroupByArgs['orderBy'] }
+        : { orderBy?: TaskEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaskEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaskEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TaskEvent model
+   */
+  readonly fields: TaskEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TaskEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaskEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    task<T extends TaskDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TaskDefaultArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TaskEvent model
+   */
+  interface TaskEventFieldRefs {
+    readonly id: FieldRef<"TaskEvent", 'String'>
+    readonly taskId: FieldRef<"TaskEvent", 'String'>
+    readonly type: FieldRef<"TaskEvent", 'String'>
+    readonly message: FieldRef<"TaskEvent", 'String'>
+    readonly createdAt: FieldRef<"TaskEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TaskEvent findUnique
+   */
+  export type TaskEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskEvent to fetch.
+     */
+    where: TaskEventWhereUniqueInput
+  }
+
+  /**
+   * TaskEvent findUniqueOrThrow
+   */
+  export type TaskEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskEvent to fetch.
+     */
+    where: TaskEventWhereUniqueInput
+  }
+
+  /**
+   * TaskEvent findFirst
+   */
+  export type TaskEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskEvent to fetch.
+     */
+    where?: TaskEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskEvents to fetch.
+     */
+    orderBy?: TaskEventOrderByWithRelationInput | TaskEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskEvents.
+     */
+    cursor?: TaskEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskEvents.
+     */
+    distinct?: TaskEventScalarFieldEnum | TaskEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskEvent findFirstOrThrow
+   */
+  export type TaskEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskEvent to fetch.
+     */
+    where?: TaskEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskEvents to fetch.
+     */
+    orderBy?: TaskEventOrderByWithRelationInput | TaskEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskEvents.
+     */
+    cursor?: TaskEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskEvents.
+     */
+    distinct?: TaskEventScalarFieldEnum | TaskEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskEvent findMany
+   */
+  export type TaskEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter, which TaskEvents to fetch.
+     */
+    where?: TaskEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskEvents to fetch.
+     */
+    orderBy?: TaskEventOrderByWithRelationInput | TaskEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TaskEvents.
+     */
+    cursor?: TaskEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskEvents.
+     */
+    distinct?: TaskEventScalarFieldEnum | TaskEventScalarFieldEnum[]
+  }
+
+  /**
+   * TaskEvent create
+   */
+  export type TaskEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TaskEvent.
+     */
+    data: XOR<TaskEventCreateInput, TaskEventUncheckedCreateInput>
+  }
+
+  /**
+   * TaskEvent createMany
+   */
+  export type TaskEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TaskEvents.
+     */
+    data: TaskEventCreateManyInput | TaskEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TaskEvent createManyAndReturn
+   */
+  export type TaskEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many TaskEvents.
+     */
+    data: TaskEventCreateManyInput | TaskEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskEvent update
+   */
+  export type TaskEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TaskEvent.
+     */
+    data: XOR<TaskEventUpdateInput, TaskEventUncheckedUpdateInput>
+    /**
+     * Choose, which TaskEvent to update.
+     */
+    where: TaskEventWhereUniqueInput
+  }
+
+  /**
+   * TaskEvent updateMany
+   */
+  export type TaskEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TaskEvents.
+     */
+    data: XOR<TaskEventUpdateManyMutationInput, TaskEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskEvents to update
+     */
+    where?: TaskEventWhereInput
+    /**
+     * Limit how many TaskEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskEvent updateManyAndReturn
+   */
+  export type TaskEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * The data used to update TaskEvents.
+     */
+    data: XOR<TaskEventUpdateManyMutationInput, TaskEventUncheckedUpdateManyInput>
+    /**
+     * Filter which TaskEvents to update
+     */
+    where?: TaskEventWhereInput
+    /**
+     * Limit how many TaskEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TaskEvent upsert
+   */
+  export type TaskEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TaskEvent to update in case it exists.
+     */
+    where: TaskEventWhereUniqueInput
+    /**
+     * In case the TaskEvent found by the `where` argument doesn't exist, create a new TaskEvent with this data.
+     */
+    create: XOR<TaskEventCreateInput, TaskEventUncheckedCreateInput>
+    /**
+     * In case the TaskEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaskEventUpdateInput, TaskEventUncheckedUpdateInput>
+  }
+
+  /**
+   * TaskEvent delete
+   */
+  export type TaskEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
+    /**
+     * Filter which TaskEvent to delete.
+     */
+    where: TaskEventWhereUniqueInput
+  }
+
+  /**
+   * TaskEvent deleteMany
+   */
+  export type TaskEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaskEvents to delete
+     */
+    where?: TaskEventWhereInput
+    /**
+     * Limit how many TaskEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TaskEvent without action
+   */
+  export type TaskEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaskEvent
+     */
+    select?: TaskEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaskEvent
+     */
+    omit?: TaskEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskEventInclude<ExtArgs> | null
   }
 
 
@@ -1917,6 +3176,17 @@ export namespace Prisma {
   };
 
   export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+  export const TaskEventScalarFieldEnum: {
+    id: 'id',
+    taskId: 'taskId',
+    type: 'type',
+    message: 'message',
+    createdAt: 'createdAt'
+  };
+
+  export type TaskEventScalarFieldEnum = (typeof TaskEventScalarFieldEnum)[keyof typeof TaskEventScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -1994,6 +3264,7 @@ export namespace Prisma {
     status?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    taskEvents?: TaskEventListRelationFilter
   }
 
   export type TaskOrderByWithRelationInput = {
@@ -2002,6 +3273,7 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskEvents?: TaskEventOrderByRelationAggregateInput
   }
 
   export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -2013,6 +3285,7 @@ export namespace Prisma {
     status?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    taskEvents?: TaskEventListRelationFilter
   }, "id">
 
   export type TaskOrderByWithAggregationInput = {
@@ -2037,12 +3310,68 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
   }
 
+  export type TaskEventWhereInput = {
+    AND?: TaskEventWhereInput | TaskEventWhereInput[]
+    OR?: TaskEventWhereInput[]
+    NOT?: TaskEventWhereInput | TaskEventWhereInput[]
+    id?: StringFilter<"TaskEvent"> | string
+    taskId?: StringFilter<"TaskEvent"> | string
+    type?: StringFilter<"TaskEvent"> | string
+    message?: StringFilter<"TaskEvent"> | string
+    createdAt?: DateTimeFilter<"TaskEvent"> | Date | string
+    task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+  }
+
+  export type TaskEventOrderByWithRelationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    task?: TaskOrderByWithRelationInput
+  }
+
+  export type TaskEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TaskEventWhereInput | TaskEventWhereInput[]
+    OR?: TaskEventWhereInput[]
+    NOT?: TaskEventWhereInput | TaskEventWhereInput[]
+    taskId?: StringFilter<"TaskEvent"> | string
+    type?: StringFilter<"TaskEvent"> | string
+    message?: StringFilter<"TaskEvent"> | string
+    createdAt?: DateTimeFilter<"TaskEvent"> | Date | string
+    task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
+  }, "id">
+
+  export type TaskEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    _count?: TaskEventCountOrderByAggregateInput
+    _max?: TaskEventMaxOrderByAggregateInput
+    _min?: TaskEventMinOrderByAggregateInput
+  }
+
+  export type TaskEventScalarWhereWithAggregatesInput = {
+    AND?: TaskEventScalarWhereWithAggregatesInput | TaskEventScalarWhereWithAggregatesInput[]
+    OR?: TaskEventScalarWhereWithAggregatesInput[]
+    NOT?: TaskEventScalarWhereWithAggregatesInput | TaskEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TaskEvent"> | string
+    taskId?: StringWithAggregatesFilter<"TaskEvent"> | string
+    type?: StringWithAggregatesFilter<"TaskEvent"> | string
+    message?: StringWithAggregatesFilter<"TaskEvent"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TaskEvent"> | Date | string
+  }
+
   export type TaskCreateInput = {
     id?: string
     instruction: string
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    taskEvents?: TaskEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateInput = {
@@ -2051,6 +3380,7 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    taskEvents?: TaskEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUpdateInput = {
@@ -2059,6 +3389,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskEvents?: TaskEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateInput = {
@@ -2067,6 +3398,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskEvents?: TaskEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskCreateManyInput = {
@@ -2093,6 +3425,61 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TaskEventCreateInput = {
+    id?: string
+    type: string
+    message: string
+    createdAt?: Date | string
+    task: TaskCreateNestedOneWithoutTaskEventsInput
+  }
+
+  export type TaskEventUncheckedCreateInput = {
+    id?: string
+    taskId: string
+    type: string
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TaskEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    task?: TaskUpdateOneRequiredWithoutTaskEventsNestedInput
+  }
+
+  export type TaskEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskEventCreateManyInput = {
+    id?: string
+    taskId: string
+    type: string
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TaskEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -2117,6 +3504,16 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type TaskEventListRelationFilter = {
+    every?: TaskEventWhereInput
+    some?: TaskEventWhereInput
+    none?: TaskEventWhereInput
+  }
+
+  export type TaskEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type TaskCountOrderByAggregateInput = {
@@ -2175,12 +3572,97 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type TaskScalarRelationFilter = {
+    is?: TaskWhereInput
+    isNot?: TaskWhereInput
+  }
+
+  export type TaskEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TaskEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TaskEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    type?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TaskEventCreateNestedManyWithoutTaskInput = {
+    create?: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput> | TaskEventCreateWithoutTaskInput[] | TaskEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskEventCreateOrConnectWithoutTaskInput | TaskEventCreateOrConnectWithoutTaskInput[]
+    createMany?: TaskEventCreateManyTaskInputEnvelope
+    connect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+  }
+
+  export type TaskEventUncheckedCreateNestedManyWithoutTaskInput = {
+    create?: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput> | TaskEventCreateWithoutTaskInput[] | TaskEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskEventCreateOrConnectWithoutTaskInput | TaskEventCreateOrConnectWithoutTaskInput[]
+    createMany?: TaskEventCreateManyTaskInputEnvelope
+    connect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type TaskEventUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput> | TaskEventCreateWithoutTaskInput[] | TaskEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskEventCreateOrConnectWithoutTaskInput | TaskEventCreateOrConnectWithoutTaskInput[]
+    upsert?: TaskEventUpsertWithWhereUniqueWithoutTaskInput | TaskEventUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: TaskEventCreateManyTaskInputEnvelope
+    set?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    disconnect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    delete?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    connect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    update?: TaskEventUpdateWithWhereUniqueWithoutTaskInput | TaskEventUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: TaskEventUpdateManyWithWhereWithoutTaskInput | TaskEventUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: TaskEventScalarWhereInput | TaskEventScalarWhereInput[]
+  }
+
+  export type TaskEventUncheckedUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput> | TaskEventCreateWithoutTaskInput[] | TaskEventUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: TaskEventCreateOrConnectWithoutTaskInput | TaskEventCreateOrConnectWithoutTaskInput[]
+    upsert?: TaskEventUpsertWithWhereUniqueWithoutTaskInput | TaskEventUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: TaskEventCreateManyTaskInputEnvelope
+    set?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    disconnect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    delete?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    connect?: TaskEventWhereUniqueInput | TaskEventWhereUniqueInput[]
+    update?: TaskEventUpdateWithWhereUniqueWithoutTaskInput | TaskEventUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: TaskEventUpdateManyWithWhereWithoutTaskInput | TaskEventUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: TaskEventScalarWhereInput | TaskEventScalarWhereInput[]
+  }
+
+  export type TaskCreateNestedOneWithoutTaskEventsInput = {
+    create?: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutTaskEventsInput
+    connect?: TaskWhereUniqueInput
+  }
+
+  export type TaskUpdateOneRequiredWithoutTaskEventsNestedInput = {
+    create?: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutTaskEventsInput
+    upsert?: TaskUpsertWithoutTaskEventsInput
+    connect?: TaskWhereUniqueInput
+    update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutTaskEventsInput, TaskUpdateWithoutTaskEventsInput>, TaskUncheckedUpdateWithoutTaskEventsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -2248,6 +3730,133 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type TaskEventCreateWithoutTaskInput = {
+    id?: string
+    type: string
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TaskEventUncheckedCreateWithoutTaskInput = {
+    id?: string
+    type: string
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TaskEventCreateOrConnectWithoutTaskInput = {
+    where: TaskEventWhereUniqueInput
+    create: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput>
+  }
+
+  export type TaskEventCreateManyTaskInputEnvelope = {
+    data: TaskEventCreateManyTaskInput | TaskEventCreateManyTaskInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TaskEventUpsertWithWhereUniqueWithoutTaskInput = {
+    where: TaskEventWhereUniqueInput
+    update: XOR<TaskEventUpdateWithoutTaskInput, TaskEventUncheckedUpdateWithoutTaskInput>
+    create: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput>
+  }
+
+  export type TaskEventUpdateWithWhereUniqueWithoutTaskInput = {
+    where: TaskEventWhereUniqueInput
+    data: XOR<TaskEventUpdateWithoutTaskInput, TaskEventUncheckedUpdateWithoutTaskInput>
+  }
+
+  export type TaskEventUpdateManyWithWhereWithoutTaskInput = {
+    where: TaskEventScalarWhereInput
+    data: XOR<TaskEventUpdateManyMutationInput, TaskEventUncheckedUpdateManyWithoutTaskInput>
+  }
+
+  export type TaskEventScalarWhereInput = {
+    AND?: TaskEventScalarWhereInput | TaskEventScalarWhereInput[]
+    OR?: TaskEventScalarWhereInput[]
+    NOT?: TaskEventScalarWhereInput | TaskEventScalarWhereInput[]
+    id?: StringFilter<"TaskEvent"> | string
+    taskId?: StringFilter<"TaskEvent"> | string
+    type?: StringFilter<"TaskEvent"> | string
+    message?: StringFilter<"TaskEvent"> | string
+    createdAt?: DateTimeFilter<"TaskEvent"> | Date | string
+  }
+
+  export type TaskCreateWithoutTaskEventsInput = {
+    id?: string
+    instruction: string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskUncheckedCreateWithoutTaskEventsInput = {
+    id?: string
+    instruction: string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskCreateOrConnectWithoutTaskEventsInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+  }
+
+  export type TaskUpsertWithoutTaskEventsInput = {
+    update: XOR<TaskUpdateWithoutTaskEventsInput, TaskUncheckedUpdateWithoutTaskEventsInput>
+    create: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+    where?: TaskWhereInput
+  }
+
+  export type TaskUpdateToOneWithWhereWithoutTaskEventsInput = {
+    where?: TaskWhereInput
+    data: XOR<TaskUpdateWithoutTaskEventsInput, TaskUncheckedUpdateWithoutTaskEventsInput>
+  }
+
+  export type TaskUpdateWithoutTaskEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instruction?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUncheckedUpdateWithoutTaskEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instruction?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskEventCreateManyTaskInput = {
+    id?: string
+    type: string
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TaskEventUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskEventUncheckedUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskEventUncheckedUpdateManyWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

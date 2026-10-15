@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma.js";
+import  prisma  from "../lib/prisma.js";
 import type { CreateTaskInput } from "../types/task.types.js";
 
 export async function createTask(input: CreateTaskInput) {

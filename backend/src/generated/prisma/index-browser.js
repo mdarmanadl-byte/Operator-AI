@@ -128,6 +128,14 @@ exports.Prisma.TaskScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TaskEventScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  type: 'type',
+  message: 'message',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -140,7 +148,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Task: 'Task'
+  Task: 'Task',
+  TaskEvent: 'TaskEvent'
 };
 
 /**
