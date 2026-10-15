@@ -1,5 +1,5 @@
 import prisma from "../lib/prisma.js";
-import { findTool } from "../agent/tool-registry.js";
+import { runAgent } from "../agent/runtime.js";
 import "../agent/register-tools.js";
 import { recordTaskEvent } from "./task-event.service.js";
 
@@ -39,50 +39,15 @@ export async function executeTask(taskId: string): Promise<void> {
       "Task execution started",
     );
 
-    const tool = findTool(task.instruction);
-
-    if (!tool) {
-      throw new Error(
-        "No registered tool can handle this instruction",
-      );
-    }
-
-    await recordTaskEvent(
-      taskId,
-      "tool_started",
-      `Starting tool: ${tool.name}`,
-    );
-
-    const result = await tool.execute(task.instruction);
-
-    await recordTaskEvent(
-      taskId,
-      "tool_completed",
-      `${tool.name} returned: ${result.output}`,
-    );
-
-    const verified = await tool.verify(
+    const result = await runAgent(
+      task.id,
       task.instruction,
-      result,
-    );
-
-    if (!verified) {
-      throw new Error(
-        `Verification failed for tool "${tool.name}"`,
-      );
-    }
-
-    await recordTaskEvent(
-      taskId,
-      "verification_passed",
-      `Verified result: ${result.output}`,
     );
 
     await recordTaskEvent(
-      taskId,
-      "execution_completed",
+      task.id,
+      "agent_result",
       JSON.stringify({
-        tool: tool.name,
         output: result.output,
         evidence: result.evidence,
       }),
