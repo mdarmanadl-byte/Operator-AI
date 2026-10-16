@@ -27,3 +27,24 @@ export async function getAllTasks() {
 export async function clearTasks(): Promise<void> {
   await prisma.task.deleteMany();
 }
+export async function updateTaskExecution(
+  id: string,
+  data: {
+    status: "running" | "completed" | "failed";
+    result?: unknown;
+    completedAt?: Date;
+  },
+) {
+  return prisma.task.update({
+    where: { id },
+    data: {
+      status: data.status,
+      ...(data.result !== undefined && {
+        result: JSON.parse(JSON.stringify(data.result)),
+      }),
+      ...(data.completedAt !== undefined && {
+        completedAt: data.completedAt,
+      }),
+    },
+  });
+}
