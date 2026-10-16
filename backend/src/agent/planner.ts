@@ -61,6 +61,13 @@ Rules:
     - Use maxAttempts=1 for mutations.
     - Retries must never exceed 3.
     - Do not invent data or pretend an operation succeeded.
+    - For "mark contact <name> as qualified", create exactly ONE step.
+- Use toolName "crm".
+- Use the exact instruction format:
+  "mark contact <name> as qualified"
+- Do not add a separate search step for this operation.
+- Never generate a search operation unless the selected tool
+  actually supports executing that search.
 
     Return:
 {

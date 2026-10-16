@@ -11,6 +11,7 @@ export interface AgentTool {
   parameters: z.ZodTypeAny;
   canHandle: (instruction: string) => boolean;
   execute: (input: any) => Promise<unknown>;
+  verify?: (instruction: string, result: any) => Promise<boolean>;
 }
 
 const tools: AgentTool[] = [

@@ -2,6 +2,10 @@ import prisma from "../lib/prisma.js";
 import { runAgent } from "../agent/runtime.js";
 import "../agent/register-tools.js";
 import { recordTaskEvent } from "./task-event.service.js";
+import {
+  registerActiveTask,
+  unregisterActiveTask,
+} from "../agent/active-tasks.js";
 
 export async function executeTask(taskId: string): Promise<void> {
   const task = await prisma.task.findUnique({
@@ -39,19 +43,28 @@ export async function executeTask(taskId: string): Promise<void> {
       "Task execution started",
     );
 
-    const result = await runAgent(
-      task.id,
-      task.instruction,
-    );
+   const controller = registerActiveTask(task.id);
 
-    await recordTaskEvent(
-      task.id,
-      "agent_result",
-      JSON.stringify({
-        output: result.output,
-        evidence: result.evidence,
-      }),
-    );
+try {
+  const result = await runAgent(
+    task.id,
+    task.instruction,
+    controller.signal,
+  );
+
+  await recordTaskEvent(
+    task.id,
+    "agent_result",
+    JSON.stringify({
+      output: result.output,
+      evidence: result.evidence,
+    }),
+  );
+
+  // Iske baad ka existing code bhi try block ke andar rakho.
+} finally {
+  unregisterActiveTask(task.id);
+}
 
     await prisma.task.update({
       where: { id: taskId },
@@ -71,7 +84,7 @@ export async function executeTask(taskId: string): Promise<void> {
       "execution_failed",
       message,
     );
-
+    console.error("Task execution error:", error);
     throw error;
   }
 }

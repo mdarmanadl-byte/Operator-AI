@@ -6,10 +6,10 @@ export interface ToolResult {
 export interface AgentTool {
   name: string;
   description: string;
-
+  
   canHandle(instruction: string): boolean;
 
-  execute(instruction: string): Promise<ToolResult>;
+  execute(instruction: string , signal?: AbortSignal,): Promise<ToolResult>;
 
   verify(
     instruction: string,

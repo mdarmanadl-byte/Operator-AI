@@ -31,7 +31,13 @@ export const browserTool: AgentTool = {
     return parseInstruction(instruction) !== null;
   },
 
-  async execute(instruction: string): Promise<ToolResult> {
+ async execute(
+  instruction: string,
+  signal?: AbortSignal,
+): Promise<ToolResult> {
+  if (signal?.aborted) {
+    throw new Error("Task execution cancelled");
+  }
     const request = parseInstruction(instruction);
 
     if (!request) {
@@ -39,8 +45,19 @@ export const browserTool: AgentTool = {
     }
 
     const browser = await chromium.launch({
-      headless: true,
-    });
+  headless: true,
+});
+
+const abortBrowser = () => {
+  void browser.close();
+};
+
+signal?.addEventListener("abort", abortBrowser, { once: true });
+
+if (signal?.aborted) {
+  await browser.close();
+  throw new Error("Task execution cancelled");
+}
 
     try {
       const page = await browser.newPage();
@@ -130,7 +147,8 @@ export const browserTool: AgentTool = {
         },
       };
     } finally {
-      await browser.close();
+     signal?.removeEventListener("abort", abortBrowser);
+  await browser.close();
     }
   },
 

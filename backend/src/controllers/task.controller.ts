@@ -5,7 +5,12 @@ import {
   getAllTasks,
   getTaskById,
 } from "../services/task.service.js";
-
+import { cancelTask } from "../services/task.service.js";
+import {
+  registerActiveTask,
+  unregisterActiveTask,
+} from "../agent/active-tasks.js";
+import { cancelActiveTask } from "../agent/active-tasks.js";
 export async function createTaskController(
   req: Request,
   res: Response,
@@ -63,4 +68,32 @@ export async function listTasksController(
   const tasks = await getAllTasks();
 
   res.status(200).json({ tasks });
+}
+export async function cancelTaskController(
+  req: Request,
+  res: Response,
+  next: (error?: unknown) => void,
+): Promise<void> {
+  try {
+    const id = req.params.id;
+
+    if (typeof id !== "string" || !id) {
+      res.status(400).json({
+        error: "Task ID is required",
+      });
+      return;
+    }
+
+    // Signal an active execution to stop.
+    cancelActiveTask(id);
+
+    const task = await cancelTask(id);
+
+    res.status(200).json({
+      message: "Task cancelled successfully",
+      task,
+    });
+  } catch (error) {
+    next(error);
+  }
 }

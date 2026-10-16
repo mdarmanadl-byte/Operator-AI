@@ -1,7 +1,10 @@
 import type { Request, Response } from "express";
 import { getTaskById } from "../services/task.service.js";
 import { runAgent } from "../agent/runtime.js";
-
+import {
+  registerActiveTask,
+  unregisterActiveTask,
+} from "../agent/active-tasks.js";
 export async function executeTaskController(
   req: Request,
   res: Response,
@@ -39,22 +42,31 @@ export async function executeTaskController(
     return;
   }
 
-  try {
-    const result = await runAgent(id, task.instruction)
+  const controller = registerActiveTask(id);
 
-    res.status(200).json({
-      message: "Task execution finished",
-      taskId: id,
-      result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "Task execution failed",
-      taskId: id,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Unknown execution error",
-    });
-  }
+try {
+  const result = await runAgent(
+    id,
+    task.instruction,
+    controller.signal,
+  );
+
+  res.status(200).json({
+    message: "Task execution finished",
+    taskId: id,
+    result,
+  });
+} catch (error) {
+  console.error("Task execution failed:", error);
+  res.status(500).json({
+    error: "Task execution failed",
+    taskId: id,
+    message:
+      error instanceof Error
+        ? error.message
+        : "Unknown execution error",
+  });
+} finally {
+  unregisterActiveTask(id);
+}
 }

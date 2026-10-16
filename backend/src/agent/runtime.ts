@@ -9,10 +9,12 @@ import {
   recordStepResult,
   type AgentState,
 } from "./state.js";
+
 import { updateTaskExecution } from "../services/task.service.js";
 import { executeStep } from "./executor.js";
-
 import { recordTaskEvent } from "../services/task-event.service.js";
+
+const CANCELLATION_MESSAGE = "Task execution cancelled";
 
 export interface AgentExecutionResult {
   plan: ExecutionPlan;
@@ -24,36 +26,57 @@ export interface AgentExecutionResult {
 export async function runAgent(
   taskId: string,
   instruction: string,
+  signal?: AbortSignal,
 ): Promise<AgentExecutionResult> {
-
-    await updateTaskExecution(taskId, {
-  status: "running",
-});
-  const plan = await createPlan(instruction);
-
-  const state = createAgentState(
-    taskId,
-    instruction,
-    plan.steps.map((step) => ({
-      id: String(step.id),
-      tool: step.toolName,
-      instruction: step.instruction,
-      purpose: step.purpose,
-      maxAttempts: step.maxAttempts,
-    })),
-  );
-
-  await recordTaskEvent(
-    taskId,
-    "plan_created",
-    JSON.stringify(plan),
-  );
-
-  let finalOutput = "";
-  let finalEvidence: Record<string, unknown> = {};
+  let plan: ExecutionPlan | undefined;
+  let state: AgentState | undefined;
 
   try {
+    // Do not start or continue a task that has already been cancelled.
+    if (signal?.aborted) {
+      throw new Error(CANCELLATION_MESSAGE);
+    }
+
+    await updateTaskExecution(taskId, {
+      status: "running",
+    });
+
+    if (signal?.aborted) {
+      throw new Error(CANCELLATION_MESSAGE);
+    }
+
+    plan = await createPlan(instruction);
+
+    if (signal?.aborted) {
+      throw new Error(CANCELLATION_MESSAGE);
+    }
+
+    state = createAgentState(
+      taskId,
+      instruction,
+      plan.steps.map((step) => ({
+        id: String(step.id),
+        tool: step.toolName,
+        instruction: step.instruction,
+        purpose: step.purpose,
+        maxAttempts: step.maxAttempts,
+      })),
+    );
+
+    await recordTaskEvent(
+      taskId,
+      "plan_created",
+      JSON.stringify(plan),
+    );
+
+    let finalOutput = "";
+    let finalEvidence: Record<string, unknown> = {};
+
     for (const plannedStep of plan.steps) {
+      if (signal?.aborted) {
+        throw new Error(CANCELLATION_MESSAGE);
+      }
+
       const step = state.steps.find(
         (item) => item.id === String(plannedStep.id),
       );
@@ -74,8 +97,16 @@ export async function runAgent(
         }),
       );
 
+      if (signal?.aborted) {
+        throw new Error(CANCELLATION_MESSAGE);
+      }
+
       try {
-        const execution = await executeStep(step);
+        const execution = await executeStep(step, signal);
+
+        if (signal?.aborted) {
+          throw new Error(CANCELLATION_MESSAGE);
+        }
 
         recordStepResult(step, execution.result);
 
@@ -94,64 +125,88 @@ export async function runAgent(
             verification: execution.verification,
           }),
         );
- 
       } catch (error) {
+        console.error("AGENT EXECUTION ERROR:", error);
         recordStepFailure(step, error);
-        await updateTaskExecution(taskId, {
-  status: "failed",
-  result: {
-    error: state.error,
-    state,
-  },
-  completedAt: new Date(),
-});
         throw error;
       }
+    }
+
+    // Prevent a cancellation during the final step from becoming success.
+    if (signal?.aborted) {
+      throw new Error(CANCELLATION_MESSAGE);
     }
 
     state.status = "completed";
     state.completedAt = new Date().toISOString();
     state.finalOutput = finalOutput;
 
-    await recordTaskEvent(
-      taskId,
-      "execution_completed",
-      JSON.stringify({
-        output: finalOutput,
-        evidence: finalEvidence,
-        state,
-      }),
-    );
-await updateTaskExecution(taskId, {
-  status: "completed",
-  result: {
-    plan,
-    state,
-    output: finalOutput,
-    evidence: finalEvidence,
-  },
-  completedAt: new Date(),
-});
-    return {
+    const result: AgentExecutionResult = {
       plan,
       state,
       output: finalOutput,
       evidence: finalEvidence,
     };
-  } catch (error) {
-    state.status = "failed";
-    state.completedAt = new Date().toISOString();
-    state.error =
-      error instanceof Error ? error.message : String(error);
 
     await recordTaskEvent(
       taskId,
-      "execution_failed",
-      JSON.stringify({
-        error: state.error,
-        state,
-      }),
+      "execution_completed",
+      JSON.stringify(result),
     );
+
+    // The task service must prevent this update from overwriting a
+    // cancellation that has already been persisted in the database.
+    if (signal?.aborted) {
+      throw new Error(CANCELLATION_MESSAGE);
+    }
+
+    await updateTaskExecution(taskId, {
+      status: "completed",
+      result,
+      completedAt: new Date(),
+    });
+
+    return result;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : String(error);
+
+    const cancelled =
+      signal?.aborted || message === CANCELLATION_MESSAGE;
+
+    if (state) {
+      state.status = cancelled ? "cancelled" : "failed";
+      state.completedAt = new Date().toISOString();
+      state.error = message;
+    }
+
+    const failureResult = {
+      error: message,
+      ...(plan ? { plan } : {}),
+      ...(state ? { state } : {}),
+    };
+
+    // Log cancellation and failure as distinct outcomes.
+    try {
+      await recordTaskEvent(
+        taskId,
+        cancelled ? "execution_cancelled" : "execution_failed",
+        JSON.stringify(failureResult),
+      );
+    } catch {
+      // Event logging must not hide the original execution error.
+    }
+
+    // Persist the final status even if planning failed before state creation.
+    try {
+      await updateTaskExecution(taskId, {
+        status: cancelled ? "cancelled" : "failed",
+        result: failureResult,
+        completedAt: new Date(),
+      });
+    } catch {
+      // Preserve the original execution error if persistence also fails.
+    }
 
     throw error;
   }

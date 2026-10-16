@@ -1,12 +1,14 @@
 import type { AgentTool, ToolResult } from "../agent/tool-registry.js";
 import { browserTool } from "../agent/tools/browser.tool.js";
-
+import { z } from "zod";
 function normalizeInstruction(instruction: string): string | null {
   const text = instruction.trim();
 
-  const search = text.match(
-    /^(?:search|find|list|show) contacts(?:\s+(?:matching|named|for|with status)\s+(.+?))?[.!?]?$/i,
-  );
+  
+    const search = text.match(
+  /^(?:search|find|list|show)\s+contacts?(?:\s+(?:matching|named|for|with status)\s+(.+?))?[.!?]?$/i,
+);
+ 
 
   if (search) {
     const query = search[1]?.trim();
@@ -23,38 +25,81 @@ function normalizeInstruction(instruction: string): string | null {
 
   return null;
 }
+const CrmInputSchema = z.object({
+  instruction: z.string().min(1),
+});
 
-export const crmTool: AgentTool = {
+export const crmTool = {
   name: "crm",
-  description:
-    "Search contacts in the Demo CRM and mark a specific contact as qualified using Playwright. Returns observed contact data and verification evidence.",
+  description: "Search and update contacts in the Demo CRM.",
+  parameters: CrmInputSchema,
 
   canHandle(instruction: string): boolean {
     return normalizeInstruction(instruction) !== null;
   },
 
-  async execute(instruction: string): Promise<ToolResult> {
-    const normalized = normalizeInstruction(instruction);
+async execute(
+  instruction: string,
+  signal?: AbortSignal,
+): Promise<ToolResult> {
+  if (signal?.aborted) {
+    throw new Error("Task execution cancelled");
+  }
 
-    if (!normalized) {
-      throw new Error(
-        "Unsupported CRM instruction. Use 'search contacts', " +
-          "'search contacts matching Alice', or " +
-          "'mark contact Alice Johnson as qualified'.",
-      );
-    }
+  const normalized = normalizeInstruction(instruction);
 
-    return browserTool.execute(normalized);
-  },
+  if (!normalized) {
+    throw new Error(`Unsupported CRM instruction: ${instruction}`);
+  }
 
-  async verify(
+  return browserTool.execute(normalized, signal);
+},
+    async verify(
     instruction: string,
     result: ToolResult,
   ): Promise<boolean> {
     const normalized = normalizeInstruction(instruction);
 
-    if (!normalized) return false;
+    if (!normalized) {
+      return false;
+    }
 
     return browserTool.verify(normalized, result);
+  },
+};
+
+export const searchContactsTool = {
+  ...crmTool,
+  name: "search_contacts",
+  description: "Search contacts in the Demo CRM.",
+
+  canHandle(instruction: string): boolean {
+    return /^(?:search|find|list|show)\s+contacts(?:\s+(?:matching|named|for)\s+.+)?[.!?]?$/i.test(
+      instruction.trim(),
+    );
+  },
+};
+
+export const getContactTool= {
+  ...crmTool,
+  name: "get_contact",
+  description: "Retrieve a contact from the Demo CRM.",
+
+  canHandle(instruction: string): boolean {
+    return /^(?:get|retrieve|fetch|view)\s+contact\s+.+$/i.test(
+      instruction.trim(),
+    );
+  },
+};
+
+export const updateContactStatusTool = {
+  ...crmTool,
+  name: "update_contact_status",
+  description: "Update a contact's status in the Demo CRM.",
+
+  canHandle(instruction: string): boolean {
+    return /^(?:mark|update)\s+contact\s+.+\s+(?:as\s+qualified|to\s+qualified)[.!]?$/i.test(
+      instruction.trim(),
+    );
   },
 };

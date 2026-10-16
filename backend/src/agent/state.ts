@@ -22,7 +22,7 @@ export interface ExecutionStep {
 export interface AgentState {
   taskId: string;
   instruction: string;
-  status: "running" | "completed" | "failed";
+  status: "running" | "completed" | "failed" | "cancelled";
   steps: ExecutionStep[];
   startedAt: string;
   completedAt?: string;

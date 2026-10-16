@@ -18,6 +18,7 @@ export interface StepExecutionResult {
 
 export async function executeStep(
   step: ExecutionStep,
+  signal?: AbortSignal,
 ): Promise<StepExecutionResult> {
   const tool = getTool(step.tool);
 
@@ -31,7 +32,7 @@ export async function executeStep(
     );
   }
 
-  const maxAttempts = Math.min(
+   const maxAttempts = Math.min(
     3,
     Math.max(1, step.maxAttempts),
   );
@@ -39,11 +40,14 @@ export async function executeStep(
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (signal?.aborted) {
+  throw new Error("Task execution cancelled");
+}
     step.attempts = attempt;
     step.status = "running";
 
     try {
-      const result = await tool.execute(step.instruction);
+      const result = await tool.execute(step.instruction,signal);
 
       const verification = await verifyStep(
         tool,
@@ -52,8 +56,12 @@ export async function executeStep(
       );
 
       if (!verification.verified) {
-        throw new Error(verification.reason);
+        throw new Error(
+          verification.reason || "Step verification failed",
+        );
       }
+
+      step.status = "completed";
 
       return {
         result,
@@ -64,12 +72,14 @@ export async function executeStep(
       lastError = error;
 
       if (attempt < maxAttempts) {
-        await new Promise((resolve) =>
+        await new Promise<void>((resolve) =>
           setTimeout(resolve, attempt * 250),
         );
       }
     }
   }
+
+  step.status = "failed";
 
   throw new Error(
     `Step "${step.id}" failed after ${maxAttempts} attempt(s): ${
@@ -78,4 +88,5 @@ export async function executeStep(
         : String(lastError)
     }`,
   );
+
 }

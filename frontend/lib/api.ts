@@ -45,3 +45,11 @@ export async function getTaskEvents(taskId: string): Promise<TaskEvent[]> {
   );
   return Array.isArray(result) ? result : result.events;
 }
+export async function cancelTask(taskId: string): Promise<void> {
+  await request(
+    `/tasks/${encodeURIComponent(taskId)}/cancel`,
+    {
+      method: "POST",
+    }
+  );
+}

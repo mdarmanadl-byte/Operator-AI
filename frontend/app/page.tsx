@@ -7,7 +7,7 @@ import StatsGrid from "@/components/dashboard/stats-grid";
 import TaskForm from "@/components/dashboard/task-form";
 import TaskHistory from "@/components/dashboard/task-history";
 import TaskDetails from "@/components/dashboard/task-details";
-import { createTask, executeTask, getTasks } from "@/lib/api";
+import { createTask, executeTask, getTasks,cancelTask } from "@/lib/api";
 import type { Task } from "@/types/task";
 
 export default function DashboardPage() {
@@ -17,6 +17,32 @@ export default function DashboardPage() {
   const [creating, setCreating] = useState(false);
   const [executing, setExecuting] = useState(false);
   const [error, setError] = useState("");
+  const [cancelling, setCancelling] = useState(false);
+
+
+  async function handleCancel(task: Task): Promise<void> {
+  if (cancelling) return;
+
+  const confirmed = window.confirm(
+    "Are you sure you want to cancel this task?"
+  );
+
+  if (!confirmed) return;
+
+  setCancelling(true);
+  setError("");
+
+  try {
+    await cancelTask(task.id);
+    await refreshTasks(true);
+  } catch (err) {
+    setError(
+      err instanceof Error ? err.message : "Task cancellation failed."
+    );
+  } finally {
+    setCancelling(false);
+  }
+}
 
   const refreshTasks = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
@@ -38,18 +64,31 @@ export default function DashboardPage() {
 
   async function handleCreate(instruction: string) {
     setCreating(true);
-    setError("");
-    try {
-      const task = await createTask({ instruction });
-      setTasks((current) => [task, ...current.filter((item) => item.id !== task.id)]);
-      setSelectedTask(task);
-      // Creating a task and executing a task are separate actions in the backend.
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Task creation failed.");
-      throw err;
-    } finally {
-      setCreating(false);
-    }
+  setError("");
+
+  try {
+    const task = await createTask({ instruction });
+
+    setTasks((current) => [
+      task,
+      ...current.filter((item) => item.id !== task.id),
+    ]);
+    setSelectedTask(task);
+
+    // Automatically execute the newly created task.
+    setExecuting(true);
+    await executeTask(task.id);
+
+    await refreshTasks(true);
+  } catch (err) {
+    setError(
+      err instanceof Error ? err.message : "Task execution failed.",
+    );
+    throw err;
+  } finally {
+    setCreating(false);
+    setExecuting(false);
+  }
   }
 
   async function handleExecute(task: Task) {
@@ -107,6 +146,8 @@ export default function DashboardPage() {
               task={selectedTask}
               onExecute={handleExecute}
               executing={executing}
+  onCancel={handleCancel}
+  cancelling={cancelling}
             />
           </section>
 
