@@ -3,8 +3,8 @@ import request from "supertest";
 import app from "../src/app.js";
 import { clearTasks } from "../src/services/task.service.js";
 describe("Task API", () => {
-    beforeEach(() => {
-        clearTasks();
+    beforeEach(async () => {
+       await clearTasks();
     });
     describe("POST /api/v1/tasks", () => {
         it("creates a task with a valid instruction", async () => {

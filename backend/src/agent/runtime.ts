@@ -1,5 +1,7 @@
-import type { AgentPlan } from "./planner.js";
-import { createPlan } from "./planner.js";
+import {
+  createPlan,
+  type ExecutionPlan,
+} from "./planner.js";
 
 import {
   createAgentState,
@@ -13,7 +15,7 @@ import { executeStep } from "./executor.js";
 import { recordTaskEvent } from "../services/task-event.service.js";
 
 export interface AgentExecutionResult {
-  plan: AgentPlan;
+  plan: ExecutionPlan;
   state: AgentState;
   output: string;
   evidence: Record<string, unknown>;
@@ -23,12 +25,16 @@ export async function runAgent(
   taskId: string,
   instruction: string,
 ): Promise<AgentExecutionResult> {
-  const plan = createPlan(instruction);
+  const plan = await createPlan(instruction);
 
   const state = createAgentState(
     taskId,
     instruction,
-    plan.steps,
+    plan.steps.map((step) => ({
+      id: String(step.id),
+      tool: step.toolName,
+      instruction: step.instruction,
+    })),
   );
 
   await recordTaskEvent(
@@ -43,7 +49,7 @@ export async function runAgent(
   try {
     for (const plannedStep of plan.steps) {
       const step = state.steps.find(
-        (item) => item.id === plannedStep.id,
+        (item) => item.id === String(plannedStep.id),
       );
 
       if (!step) {
