@@ -9,7 +9,7 @@ import {
   recordStepResult,
   type AgentState,
 } from "./state.js";
-
+import { updateTaskExecution } from "../services/task.service.js";
 import { executeStep } from "./executor.js";
 
 import { recordTaskEvent } from "../services/task-event.service.js";
@@ -25,6 +25,10 @@ export async function runAgent(
   taskId: string,
   instruction: string,
 ): Promise<AgentExecutionResult> {
+
+    await updateTaskExecution(taskId, {
+  status: "running",
+});
   const plan = await createPlan(instruction);
 
   const state = createAgentState(
@@ -90,8 +94,17 @@ export async function runAgent(
             verification: execution.verification,
           }),
         );
+ 
       } catch (error) {
         recordStepFailure(step, error);
+        await updateTaskExecution(taskId, {
+  status: "failed",
+  result: {
+    error: state.error,
+    state,
+  },
+  completedAt: new Date(),
+});
         throw error;
       }
     }
@@ -109,7 +122,16 @@ export async function runAgent(
         state,
       }),
     );
-
+await updateTaskExecution(taskId, {
+  status: "completed",
+  result: {
+    plan,
+    state,
+    output: finalOutput,
+    evidence: finalEvidence,
+  },
+  completedAt: new Date(),
+});
     return {
       plan,
       state,

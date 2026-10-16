@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { getTaskById } from "../services/task.service.js";
-import { runAgent as executeTask } from "../agent/runtime.js";
+import { runAgent } from "../agent/runtime.js";
 
 export async function executeTaskController(
   req: Request,
@@ -10,25 +10,51 @@ export async function executeTaskController(
 
   if (typeof id !== "string") {
     res.status(400).json({ error: "Invalid task ID" });
-    try {
-      const result = await executeTask(id, task.instruction);
+    return;
+  }
+
+  const task = await getTaskById(id);
+
+  if (!task) {
+    res.status(404).json({ error: "Task not found" });
+    return;
+  }
+
+  if (task.status === "running") {
+    res.status(409).json({
+      error: "Task is already running",
+      taskId: id,
+    });
+    return;
+  }
+
+  if (
+    task.status === "completed" ||
+    task.status === "cancelled"
+  ) {
+    res.status(409).json({
+      error: `Cannot execute a ${task.status} task`,
+      taskId: id,
+    });
+    return;
+  }
 
   try {
-        message: "Task execution finished",
+    const result = await runAgent(id, task.instruction)
 
-        result,
     res.status(200).json({
-      message: "Task execution completed",
-      res.status(500).json({
-        error: "Task execution failed",
-        taskId: id,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unknown execution error",
-      });
-    }
-
-    res.status(409).json({ error: message });
+      message: "Task execution finished",
+      taskId: id,
+      result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Task execution failed",
+      taskId: id,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unknown execution error",
+    });
   }
 }
