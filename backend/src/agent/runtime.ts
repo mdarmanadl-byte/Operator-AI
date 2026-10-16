@@ -34,6 +34,8 @@ export async function runAgent(
       id: String(step.id),
       tool: step.toolName,
       instruction: step.instruction,
+      purpose: step.purpose,
+      maxAttempts: step.maxAttempts,
     })),
   );
 

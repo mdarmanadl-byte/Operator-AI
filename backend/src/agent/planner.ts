@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { getTool, listTools } from "./tool-registry.js";
 import { generateCompletion } from "./llm-provider.js";
+import { getTool, listTools } from "./tool-registry.js";
+import "./register-tools.js";
 
 const ExecutionPlanSchema = z.object({
   goal: z.string().min(1),
@@ -43,25 +44,27 @@ export async function createPlan(
       content: `
 You are the planning engine for Operator AI.
 
-Create a plan for the user's goal using only the registered tools.
-
 Available tools:
 ${JSON.stringify(availableTools, null, 2)}
 
+    Create a short, ordered execution plan using only these tools.
+
 Rules:
-- Return JSON only.
+    - Return valid JSON only.
 - Never invent tool names.
 - Every step must specify an available tool.
-- Break multi-action tasks into ordered steps.
-- Each instruction must describe one actionable operation.
+    - Every step must use a registered tool.
+    - Each step must be one actionable operation.
+    - Instructions must follow the selected tool's supported format.
 - Do not claim an action has already happened.
-- Use a maximum of 8 steps.
-- Set maxAttempts to 1 for potentially non-idempotent actions.
-- Use maxAttempts up to 3 only when retries are safe.
+    - Use at most 8 steps.
+    - Use maxAttempts=1 for mutations.
+    - Retries must never exceed 3.
+    - Do not invent data or pretend an operation succeeded.
 
-Required JSON structure:
+    Return:
 {
-  "goal": "string",
+      "goal": "the user's goal",
   "steps": [
     {
       "id": 1,
@@ -80,25 +83,31 @@ Required JSON structure:
     },
   ]);
 
-  let parsed: unknown;
+  let raw: unknown;
 
   try {
-    parsed = JSON.parse(response.content);
+    raw = JSON.parse(response.content);
   } catch {
     throw new Error("LLM planner returned invalid JSON");
   }
 
-  const validated = ExecutionPlanSchema.safeParse(parsed);
+  const parsed = ExecutionPlanSchema.safeParse(raw);
 
-  if (!validated.success) {
+  if (!parsed.success) {
     throw new Error(
-      `Invalid execution plan: ${validated.error.message}`,
+      `Invalid execution plan: ${parsed.error.message}`,
     );
   }
 
-  const plan = validated.data;
+  const plan = parsed.data;
 
-  for (const step of plan.steps) {
+  for (const [index, step] of plan.steps.entries()) {
+    if (step.id !== index + 1) {
+      throw new Error(
+        "Plan step IDs must be sequential, starting at 1",
+      );
+    }
+
     const tool = getTool(step.toolName);
 
     if (!tool) {

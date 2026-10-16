@@ -18,7 +18,9 @@ model Task {
   status      String      @default("pending")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  taskEvents  TaskEvent[]
+  events      TaskEvent[]
+  result      Json?
+  completedAt DateTime?
 
   @@index([status])
   @@index([createdAt])

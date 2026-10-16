@@ -985,11 +985,11 @@ export namespace Prisma {
    */
 
   export type TaskCountOutputType = {
-    taskEvents: number
+    events: number
   }
 
   export type TaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    taskEvents?: boolean | TaskCountOutputTypeCountTaskEventsArgs
+    events?: boolean | TaskCountOutputTypeCountEventsArgs
   }
 
   // Custom InputTypes
@@ -1006,7 +1006,7 @@ export namespace Prisma {
   /**
    * TaskCountOutputType without action
    */
-  export type TaskCountOutputTypeCountTaskEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type TaskCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskEventWhereInput
   }
 
@@ -1031,6 +1031,7 @@ export namespace Prisma {
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    completedAt: Date | null
   }
 
   export type TaskMaxAggregateOutputType = {
@@ -1039,6 +1040,7 @@ export namespace Prisma {
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    completedAt: Date | null
   }
 
   export type TaskCountAggregateOutputType = {
@@ -1047,6 +1049,8 @@ export namespace Prisma {
     status: number
     createdAt: number
     updatedAt: number
+    result: number
+    completedAt: number
     _all: number
   }
 
@@ -1057,6 +1061,7 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
+    completedAt?: true
   }
 
   export type TaskMaxAggregateInputType = {
@@ -1065,6 +1070,7 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
+    completedAt?: true
   }
 
   export type TaskCountAggregateInputType = {
@@ -1073,6 +1079,8 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
+    result?: true
+    completedAt?: true
     _all?: true
   }
 
@@ -1154,6 +1162,8 @@ export namespace Prisma {
     status: string
     createdAt: Date
     updatedAt: Date
+    result: JsonValue | null
+    completedAt: Date | null
     _count: TaskCountAggregateOutputType | null
     _min: TaskMinAggregateOutputType | null
     _max: TaskMaxAggregateOutputType | null
@@ -1179,7 +1189,9 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    taskEvents?: boolean | Task$taskEventsArgs<ExtArgs>
+    result?: boolean
+    completedAt?: boolean
+    events?: boolean | Task$eventsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -1189,6 +1201,8 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    result?: boolean
+    completedAt?: boolean
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1197,6 +1211,8 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    result?: boolean
+    completedAt?: boolean
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectScalar = {
@@ -1205,11 +1221,13 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    result?: boolean
+    completedAt?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instruction" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instruction" | "status" | "createdAt" | "updatedAt" | "result" | "completedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    taskEvents?: boolean | Task$taskEventsArgs<ExtArgs>
+    events?: boolean | Task$eventsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1218,7 +1236,7 @@ export namespace Prisma {
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
     objects: {
-      taskEvents: Prisma.$TaskEventPayload<ExtArgs>[]
+      events: Prisma.$TaskEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1226,6 +1244,8 @@ export namespace Prisma {
       status: string
       createdAt: Date
       updatedAt: Date
+      result: Prisma.JsonValue | null
+      completedAt: Date | null
     }, ExtArgs["result"]["task"]>
     composites: {}
   }
@@ -1620,7 +1640,7 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    taskEvents<T extends Task$taskEventsArgs<ExtArgs> = {}>(args?: Subset<T, Task$taskEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    events<T extends Task$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Task$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1655,6 +1675,8 @@ export namespace Prisma {
     readonly status: FieldRef<"Task", 'String'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
+    readonly result: FieldRef<"Task", 'Json'>
+    readonly completedAt: FieldRef<"Task", 'DateTime'>
   }
     
 
@@ -2048,9 +2070,9 @@ export namespace Prisma {
   }
 
   /**
-   * Task.taskEvents
+   * Task.events
    */
-  export type Task$taskEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Task$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the TaskEvent
      */
@@ -3172,7 +3194,9 @@ export namespace Prisma {
     instruction: 'instruction',
     status: 'status',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    result: 'result',
+    completedAt: 'completedAt'
   };
 
   export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
@@ -3197,12 +3221,37 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -3239,6 +3288,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -3264,7 +3327,9 @@ export namespace Prisma {
     status?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    taskEvents?: TaskEventListRelationFilter
+    result?: JsonNullableFilter<"Task">
+    completedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    events?: TaskEventListRelationFilter
   }
 
   export type TaskOrderByWithRelationInput = {
@@ -3273,7 +3338,9 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    taskEvents?: TaskEventOrderByRelationAggregateInput
+    result?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    events?: TaskEventOrderByRelationAggregateInput
   }
 
   export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -3285,7 +3352,9 @@ export namespace Prisma {
     status?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    taskEvents?: TaskEventListRelationFilter
+    result?: JsonNullableFilter<"Task">
+    completedAt?: DateTimeNullableFilter<"Task"> | Date | string | null
+    events?: TaskEventListRelationFilter
   }, "id">
 
   export type TaskOrderByWithAggregationInput = {
@@ -3294,6 +3363,8 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    result?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
     _count?: TaskCountOrderByAggregateInput
     _max?: TaskMaxOrderByAggregateInput
     _min?: TaskMinOrderByAggregateInput
@@ -3308,6 +3379,8 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"Task"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+    result?: JsonNullableWithAggregatesFilter<"Task">
+    completedAt?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
   }
 
   export type TaskEventWhereInput = {
@@ -3371,7 +3444,9 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    taskEvents?: TaskEventCreateNestedManyWithoutTaskInput
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    events?: TaskEventCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUncheckedCreateInput = {
@@ -3380,7 +3455,9 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    taskEvents?: TaskEventUncheckedCreateNestedManyWithoutTaskInput
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
+    events?: TaskEventUncheckedCreateNestedManyWithoutTaskInput
   }
 
   export type TaskUpdateInput = {
@@ -3389,7 +3466,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    taskEvents?: TaskEventUpdateManyWithoutTaskNestedInput
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: TaskEventUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskUncheckedUpdateInput = {
@@ -3398,7 +3477,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    taskEvents?: TaskEventUncheckedUpdateManyWithoutTaskNestedInput
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    events?: TaskEventUncheckedUpdateManyWithoutTaskNestedInput
   }
 
   export type TaskCreateManyInput = {
@@ -3407,6 +3488,8 @@ export namespace Prisma {
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
   }
 
   export type TaskUpdateManyMutationInput = {
@@ -3415,6 +3498,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TaskUncheckedUpdateManyInput = {
@@ -3423,6 +3508,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TaskEventCreateInput = {
@@ -3430,7 +3517,7 @@ export namespace Prisma {
     type: string
     message: string
     createdAt?: Date | string
-    task: TaskCreateNestedOneWithoutTaskEventsInput
+    task: TaskCreateNestedOneWithoutEventsInput
   }
 
   export type TaskEventUncheckedCreateInput = {
@@ -3446,7 +3533,7 @@ export namespace Prisma {
     type?: StringFieldUpdateOperationsInput | string
     message?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    task?: TaskUpdateOneRequiredWithoutTaskEventsNestedInput
+    task?: TaskUpdateOneRequiredWithoutEventsNestedInput
   }
 
   export type TaskEventUncheckedUpdateInput = {
@@ -3505,11 +3592,50 @@ export namespace Prisma {
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
 
   export type TaskEventListRelationFilter = {
     every?: TaskEventWhereInput
     some?: TaskEventWhereInput
     none?: TaskEventWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type TaskEventOrderByRelationAggregateInput = {
@@ -3522,6 +3648,8 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    result?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type TaskMaxOrderByAggregateInput = {
@@ -3530,6 +3658,7 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type TaskMinOrderByAggregateInput = {
@@ -3538,6 +3667,7 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    completedAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -3570,6 +3700,46 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type TaskScalarRelationFilter = {
@@ -3623,6 +3793,10 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type TaskEventUpdateManyWithoutTaskNestedInput = {
     create?: XOR<TaskEventCreateWithoutTaskInput, TaskEventUncheckedCreateWithoutTaskInput> | TaskEventCreateWithoutTaskInput[] | TaskEventUncheckedCreateWithoutTaskInput[]
     connectOrCreate?: TaskEventCreateOrConnectWithoutTaskInput | TaskEventCreateOrConnectWithoutTaskInput[]
@@ -3651,18 +3825,18 @@ export namespace Prisma {
     deleteMany?: TaskEventScalarWhereInput | TaskEventScalarWhereInput[]
   }
 
-  export type TaskCreateNestedOneWithoutTaskEventsInput = {
-    create?: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
-    connectOrCreate?: TaskCreateOrConnectWithoutTaskEventsInput
+  export type TaskCreateNestedOneWithoutEventsInput = {
+    create?: XOR<TaskCreateWithoutEventsInput, TaskUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutEventsInput
     connect?: TaskWhereUniqueInput
   }
 
-  export type TaskUpdateOneRequiredWithoutTaskEventsNestedInput = {
-    create?: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
-    connectOrCreate?: TaskCreateOrConnectWithoutTaskEventsInput
-    upsert?: TaskUpsertWithoutTaskEventsInput
+  export type TaskUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<TaskCreateWithoutEventsInput, TaskUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutEventsInput
+    upsert?: TaskUpsertWithoutEventsInput
     connect?: TaskWhereUniqueInput
-    update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutTaskEventsInput, TaskUpdateWithoutTaskEventsInput>, TaskUncheckedUpdateWithoutTaskEventsInput>
+    update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutEventsInput, TaskUpdateWithoutEventsInput>, TaskUncheckedUpdateWithoutEventsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -3688,6 +3862,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -3730,6 +3915,54 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type TaskEventCreateWithoutTaskInput = {
@@ -3783,52 +4016,60 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"TaskEvent"> | Date | string
   }
 
-  export type TaskCreateWithoutTaskEventsInput = {
+  export type TaskCreateWithoutEventsInput = {
     id?: string
     instruction: string
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
   }
 
-  export type TaskUncheckedCreateWithoutTaskEventsInput = {
+  export type TaskUncheckedCreateWithoutEventsInput = {
     id?: string
     instruction: string
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: Date | string | null
   }
 
-  export type TaskCreateOrConnectWithoutTaskEventsInput = {
+  export type TaskCreateOrConnectWithoutEventsInput = {
     where: TaskWhereUniqueInput
-    create: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+    create: XOR<TaskCreateWithoutEventsInput, TaskUncheckedCreateWithoutEventsInput>
   }
 
-  export type TaskUpsertWithoutTaskEventsInput = {
-    update: XOR<TaskUpdateWithoutTaskEventsInput, TaskUncheckedUpdateWithoutTaskEventsInput>
-    create: XOR<TaskCreateWithoutTaskEventsInput, TaskUncheckedCreateWithoutTaskEventsInput>
+  export type TaskUpsertWithoutEventsInput = {
+    update: XOR<TaskUpdateWithoutEventsInput, TaskUncheckedUpdateWithoutEventsInput>
+    create: XOR<TaskCreateWithoutEventsInput, TaskUncheckedCreateWithoutEventsInput>
     where?: TaskWhereInput
   }
 
-  export type TaskUpdateToOneWithWhereWithoutTaskEventsInput = {
+  export type TaskUpdateToOneWithWhereWithoutEventsInput = {
     where?: TaskWhereInput
-    data: XOR<TaskUpdateWithoutTaskEventsInput, TaskUncheckedUpdateWithoutTaskEventsInput>
+    data: XOR<TaskUpdateWithoutEventsInput, TaskUncheckedUpdateWithoutEventsInput>
   }
 
-  export type TaskUpdateWithoutTaskEventsInput = {
+  export type TaskUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     instruction?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type TaskUncheckedUpdateWithoutTaskEventsInput = {
+  export type TaskUncheckedUpdateWithoutEventsInput = {
     id?: StringFieldUpdateOperationsInput | string
     instruction?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    result?: NullableJsonNullValueInput | InputJsonValue
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TaskEventCreateManyTaskInput = {

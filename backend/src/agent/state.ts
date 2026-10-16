@@ -10,6 +10,8 @@ export interface ExecutionStep {
   id: string;
   tool: string;
   instruction: string;
+  purpose?: string;
+  maxAttempts: number;
   status: StepStatus;
   attempts: number;
   output?: string;
@@ -35,6 +37,8 @@ export function createAgentState(
     id: string;
     tool: string;
     instruction: string;
+    purpose?: string;
+    maxAttempts?: number;
   }>,
 ): AgentState {
   if (plannedSteps.length === 0) {
@@ -50,6 +54,11 @@ export function createAgentState(
       id: step.id,
       tool: step.tool,
       instruction: step.instruction,
+      purpose: step.purpose,
+      maxAttempts: Math.min(
+        3,
+        Math.max(1, step.maxAttempts ?? 1),
+      ),
       status: "pending",
       attempts: 0,
     })),

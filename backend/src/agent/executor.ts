@@ -16,8 +16,6 @@ export interface StepExecutionResult {
   attempts: number;
 }
 
-const MAX_ATTEMPTS = 3;
-
 export async function executeStep(
   step: ExecutionStep,
 ): Promise<StepExecutionResult> {
@@ -27,9 +25,20 @@ export async function executeStep(
     throw new Error(`Tool "${step.tool}" is not registered`);
   }
 
+  if (!tool.canHandle(step.instruction)) {
+    throw new Error(
+      `Tool "${step.tool}" cannot handle this instruction`,
+    );
+  }
+
+  const maxAttempts = Math.min(
+    3,
+    Math.max(1, step.maxAttempts),
+  );
+
   let lastError: unknown;
 
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     step.attempts = attempt;
     step.status = "running";
 
@@ -54,8 +63,7 @@ export async function executeStep(
     } catch (error) {
       lastError = error;
 
-      if (attempt < MAX_ATTEMPTS) {
-        // Short bounded delay before retrying.
+      if (attempt < maxAttempts) {
         await new Promise((resolve) =>
           setTimeout(resolve, attempt * 250),
         );
@@ -64,7 +72,7 @@ export async function executeStep(
   }
 
   throw new Error(
-    `Step "${step.id}" failed after ${MAX_ATTEMPTS} attempts: ${
+    `Step "${step.id}" failed after ${maxAttempts} attempt(s): ${
       lastError instanceof Error
         ? lastError.message
         : String(lastError)

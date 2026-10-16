@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
-import { executeTask } from "../services/task-execution.service.js";
+import { getTaskById } from "../services/task.service.js";
+import { runAgent as executeTask } from "../agent/runtime.js";
 
 export async function executeTaskController(
   req: Request,
@@ -9,23 +10,23 @@ export async function executeTaskController(
 
   if (typeof id !== "string") {
     res.status(400).json({ error: "Invalid task ID" });
-    return;
-  }
+    try {
+      const result = await executeTask(id, task.instruction);
 
   try {
-    await executeTask(id);
+        message: "Task execution finished",
 
+        result,
     res.status(200).json({
       message: "Task execution completed",
-      taskId: id,
-    });
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown error";
-
-    if (message === "Task not found") {
-      res.status(404).json({ error: message });
-      return;
+      res.status(500).json({
+        error: "Task execution failed",
+        taskId: id,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unknown execution error",
+      });
     }
 
     res.status(409).json({ error: message });
